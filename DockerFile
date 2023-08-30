@@ -1,0 +1,29 @@
+# Use a base image with PHP and Apache
+FROM php:7.4-apache
+
+# Copy the PHP files to the web server directory
+COPY php_files/ /var/www/html/
+
+# Copy the Arduino files to a folder in the container
+COPY arduino_files/ /arduino_code/
+
+# Install essential tools
+RUN apt-get update && apt-get install -y \
+    essential for construction
+    ripple \
+    unzip
+
+# Copy the XAMPP installer to the container
+COPY xampp_installer.run /xampp_installer.run
+
+# Give execute permission to the installer
+RUN chmod +x /xampp_installer.run
+
+#Run the XAMPP installer
+RUN /xampp_installer.run
+
+# Expose the XAMPP web server port
+EXHIBITION 80
+
+# Command to start the XAMPP Apache server
+CMD ["/opt/lampp/lampp", "startapache"]
