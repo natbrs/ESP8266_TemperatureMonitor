@@ -8,6 +8,10 @@ app.get('/', (request, response)=>{
     return response.json({message:'Server is up'});
 })
 
+app.get('/update', (request, response)=>{
+    return response.json({message: 'updated!'})
+})
+
 app.post('/teste',(request, response)=>{
     const {name,date} = request.body; 
 
