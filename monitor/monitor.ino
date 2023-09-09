@@ -1,81 +1,75 @@
 #include <ESP8266WiFi.h>
-#include <SimpleDHT.h>
+#include <DHT.h>
 
-// WiFi - Coloque aqui suas configurações de WI-FI
-const char ssid[] = "PiNat";
-const char psw[] = "rafael13";
+const char* ssid = "SEU_SSID";
+const char* password = "SUA_SENHA"; 
+const char* server = "SEU_SERVIDOR"; 
+const int port = 3000; 
 
-// Site remoto - Coloque aqui os dados do site que vai receber a requisição GET
-const char http_site[] = "YOUR_IP";
-const int http_port = 8081;
-const char http_path[] = "/public_html/temperature-monitor.php";
-
-// Variáveis globais
-WiFiClient client;
-IPAddress server(0, 0, 0, 0);  // Endereço IP do servidor - http_site
-int pinDHT1 = D1;
-SimpleDHT11 dht11;
+DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
-  delay(30000);
   Serial.begin(9600);
-  Serial.println("NodeMCU - Gravando dados no BD via GET");
-  Serial.println("Aguardando conexão");
+  delay(10);
 
-  // Tenta conexão com Wi-Fi
-  WiFi.begin(ssid, psw);
+  // Conecte-se à rede Wi-Fi
+  Serial.println();
+  Serial.print("Conectando a ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
   while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
+    delay(500);
     Serial.print(".");
   }
-  Serial.print("\nWi-Fi conectado com sucesso: ");
-  Serial.println(ssid);
+
+  Serial.println("");
+  Serial.println("WiFi conectado");
+
+  dht.begin();
 }
 
 void loop() {
+  delay(2000);
 
-  // Leitura do sensor DHT11
-  delay(3000);  // delay entre as leituras
-  byte temp = 0;
-  byte humid = 0;
-  if (dht11.read(pinDHT1, &temp, &humid, NULL)) {
-    Serial.print("Falha na leitura do sensor.");
+  float humidity = dht.readHumidity();
+  float temperature = dht.readTemperature();
+
+  if (isnan(humidity) || isnan(temperature)) {
+    Serial.println("Falha ao ler o sensor DHT!");
     return;
   }
 
-  Serial.println("Gravando dados no BD: ");
-  Serial.print((int)temp);
-  Serial.print(" *C, ");
-  Serial.print((int)humid);
-  Serial.println(" %");
-
-  // Envio dos dados do sensor para o servidor via GET
-  if (!getPage((int)temp, (int)humid)) {
-    Serial.println("GET request failed");
-  }
+  // Enviar dados para o servidor Node.js
+  sendDataToServer(temperature, humidity);
 }
 
-// Executa o HTTP GET request no site remoto
-bool getPage(int temp, int humid) {
-  if (!client.connect(server, http_port)) {
-    Serial.println("Falha na conexão com o site");
-    return false;
-  }
-  String param = "?temp=" + String(temp) + "&humid=" + String(humid);  // Parâmetros com as leituras
-  Serial.println(param);
-  client.print("GET ");
-  client.print(http_path);
-  client.print(param);
-  client.println(" HTTP/1.1");
-  client.print("Host: ");
-  client.println(http_site);
-  client.println("Connection: close");
-  client.println();
+void sendDataToServer(float temperature, float humidity) {
+  WiFiClient client;
 
-  // Informações de retorno do servidor para debug
-  while (client.available()) {
-    String line = client.readStringUntil('\r');
-    Serial.print(line);
+  if (!client.connect(server, port)) {
+    Serial.println("Falha na conexão com o servidor");
+    return;
   }
-  return true;
+
+  // Construa a URL para enviar os dados
+  String url = "/add-value?temp=" + String(temperature) + "&umi=" + String(humidity);
+
+  Serial.print("Enviando dados para: ");
+  Serial.println(url);
+
+  // Envie a solicitação HTTP GET
+  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+               "Host: " + server + "\r\n" +
+               "Connection: close\r\n\r\n");
+
+  while (client.connected()) {
+    if (client.available()) {
+      String line = client.readStringUntil('\r');
+      Serial.print(line);
+    }
+  }
+
+  client.stop();
 }
