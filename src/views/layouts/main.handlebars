@@ -2,8 +2,9 @@
 <html>
 <head>
     <title>Sensor Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
 </head>
 <body>
     <h1>Dados coletados:</h1>
@@ -14,77 +15,32 @@
     </ul>
 
     <h1>Gráficos relacionados aos dados coletados: </h1>
-    <canvas id="temperatureChart" width="0.5%" height="10%"></canvas>
-    <canvas id="humidityChart" width="0.5%" height="10%"></canvas>
+    <div class="ct-chart" id="temperatureChart"></div>
+    <div class="ct-chart" id="humidityChart"></div>
 
     <script>
-        console.log({{this.dataValues.id}})
-        const temperatureData = []
-        const humidityData = []
+        const temperatureData = [];
+        const humidityData = [];
+        const labels = [];
 
         {{#each sensor}}
-            temperatureData.push({{this.dataValues.wea_temp}})
-            humidityData.push({{this.dataValues.wea_humid}})
+            temperatureData.push({{this.dataValues.wea_temp}});
+            humidityData.push({{this.dataValues.wea_humid}});
+            labels.push('{{this.dataValues.id}}');
         {{/each}}
-
-        const labels = Array.from({ length: temperatureData.length }, (_, i) => `Hour ${i}`);
-
-        const temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
-        const humidityCtx = document.getElementById('humidityChart').getContext('2d');
 
         const temperatureDataConfig = {
             labels: labels,
-            datasets: [{
-                label: 'Temperatura (°C)',
-                data: temperatureData,
-                borderColor: 'blue',
-                borderWidth: 2,
-                fill: false,
-            }],
+            series: [temperatureData]
         };
 
         const humidityDataConfig = {
             labels: labels,
-            datasets: [{
-                label: 'Umidade (%)',
-                data: humidityData,
-                borderColor: 'green',
-                borderWidth: 2,
-                fill: false,
-            }],
+            series: [humidityData]
         };
 
-        const temperatureChart = new Chart(temperatureCtx, {
-            type: 'line',
-            data: temperatureDataConfig,
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                    },
-                    y: {
-                        beginAtZero: true,
-                    },
-                },
-            },
-        });
-
-        const humidityChart = new Chart(humidityCtx, {
-            type: 'line',
-            data: humidityDataConfig,
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                    },
-                    y: {
-                        beginAtZero: true,
-                    },
-                },
-            },
-        });
+        new Chartist.Line('#temperatureChart', temperatureDataConfig);
+        new Chartist.Line('#humidityChart', humidityDataConfig);
     </script>
 </body>
 </html>
