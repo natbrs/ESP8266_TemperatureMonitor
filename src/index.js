@@ -20,7 +20,7 @@ sequelize.sync().then(() => {
   console.error("Error no banco:", error);
 });
 
-app.get('/', async (request, response) => {
+app.get('/', async (response) => {
   try {
     const sensors = await Sensor.findAll({
       attributes: ['wea_temp', 'wea_humid', 'wea_id', 'createdAt']

@@ -2,57 +2,88 @@
 <html>
 <head>
     <title>Sensor Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Dados coletados:</h1>
+    <h1>Dados obtidos:</h1>
     <ul>
-        {{#each sensors}}
+        {{#each sensor}}
             <li>Temperatura: {{this.dataValues.wea_temp}}, Umidade: {{this.dataValues.wea_humid}}</li>
         {{/each}}
     </ul>
 
-    <h1>Gráficos dos dados: </h1>
-    <div id="temperatureChart" class="ct-chart"></div>
-    <div id="humidityChart" class="ct-chart"></div>
+    <h1>Gráficos relacionados aos dados coletados: </h1>
+    <canvas id="temperatureChart" width="0.5%" height="10%"></canvas>
+    <canvas id="humidityChart" width="0.5%" height="10%"></canvas>
 
     <script>
-        const temperatureData = [];
-        const humidityData = [];
+        console.log({{this.dataValues.id}})
+        const temperatureData = []
+        const humidityData = []
 
-        {{#each sensors}}
-            temperatureData.push({x: '{{this.dataValues.horario}}', y: {{this.dataValues.wea_temp}}});
-            humidityData.push({x: '{{this.dataValues.horario}}', y: {{this.dataValues.wea_humid}}});
+        {{#each sensor}}
+            temperatureData.push({{this.dataValues.wea_temp}})
+            humidityData.push({{this.dataValues.wea_humid}})
         {{/each}}
 
-        const temperatureChartOptions = {
-            axisX: {
-                labelInterpolationFnc: function(value, index) {
-                    return index % 2 === 0 ? value : null;
-                }
-            },
-            fullWidth: true
+        const labels = Array.from({ length: temperatureData.length }, (_, i) => `Hour ${i}`);
+
+        const temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
+        const humidityCtx = document.getElementById('humidityChart').getContext('2d');
+
+        const temperatureDataConfig = {
+            labels: labels,
+            datasets: [{
+                label: 'Temperatura (°C)',
+                data: temperatureData,
+                borderColor: 'blue',
+                borderWidth: 2,
+                fill: false,
+            }],
         };
 
-        const humidityChartOptions = {
-            axisX: {
-                labelInterpolationFnc: function(value, index) {
-                    return index % 2 === 0 ? value : null;
-                }
-            },
-            fullWidth: true
+        const humidityDataConfig = {
+            labels: labels,
+            datasets: [{
+                label: 'Umidade (%)',
+                data: humidityData,
+                borderColor: 'green',
+                borderWidth: 2,
+                fill: false,
+            }],
         };
 
-        new Chartist.Line('#temperatureChart', {
-            labels: [],
-            series: [temperatureData]
-        }, temperatureChartOptions);
+        const temperatureChart = new Chart(temperatureCtx, {
+            type: 'line',
+            data: temperatureDataConfig,
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                    },
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
 
-        new Chartist.Line('#humidityChart', {
-            labels: [],
-            series: [humidityData]
-        }, humidityChartOptions);
+        const humidityChart = new Chart(humidityCtx, {
+            type: 'line',
+            data: humidityDataConfig,
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                    },
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
     </script>
 </body>
 </html>
