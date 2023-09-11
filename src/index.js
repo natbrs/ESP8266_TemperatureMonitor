@@ -1,16 +1,18 @@
-const express = require('express');
-const { sequelize, Sensor } = require('./database.js');
-const { engine } = require('express-handlebars');
-const https = require('https');
-const fs = require('fs');
+import express from 'express';
+import { sequelize, Weather } from './database.js';
+import { engine } from 'express-handlebars';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
 app.engine('handlebars', engine());
-app.set('view engine', 'handlebars');\
+app.set('view engine', 'handlebars');
 
-app.use(express.json());
+app.set('views', path.join(__dirname, 'views/'));
 
 sequelize.sync().then(() => {
   console.log("Banco sincronizado");
@@ -21,7 +23,7 @@ sequelize.sync().then(() => {
 app.get('/', async (request, response) => {
   try {
     const sensors = await Sensor.findAll({
-        attributes: ['wea_temp', 'wea_humid', 'wea_id', 'createdAt']
+      attributes: ['wea_temp', 'wea_humid', 'wea_id', 'createdAt']
     });
 
     response.render('home', { sensors });
@@ -31,22 +33,19 @@ app.get('/', async (request, response) => {
   }
 });
 
-
-app.get('/add-value', async (request, response) => {
+app.get("/dashboard", async (req, res) => {
   try {
-    await Sensor.create({
-      temp: request.query.temp,
-      hum: request.query.umi
+    await Weather.create({
+      wea_temp: req.query.wea_temp,
+      wea_humid: req.query.wea_humid
     });
-    response.send('Leitura adicionada com sucesso!');
   } catch (error) {
-    console.error('Erro ao inserir dados:', error);
-    response.status(500).send('Erro interno do servidor');
+    console.error("Error inserting data:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
-const server = https.createServer(options, app);
-
-server.listen(3000, () => {
-  console.log('Servidor HTTPS está em execução na porta 300');
+const PORT = process.env.PORT || 3000; 
+app.listen(PORT, () => {
+  console.log(`Servidor HTTPS está em execução na porta ${PORT}`);
 });

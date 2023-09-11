@@ -1,24 +1,30 @@
-import { Sequelize, DataTypes } from "sequelize";
-import dotenv from "dotenv";
-dotenv.config();
+import { Sequelize, DataTypes } from 'sequelize';
+import pg from 'pg';
+import dotenv from 'dotenv/config.js';
 
-console.log(process.env.MYSQL_DATABASE);
+console.log(process.env.POSTGRES_DATABASE)
 
-const sequelize = new Sequelize(process.env.MYSQL_DATABASE, process.env.MYSQL_USER, process.env.MYSQL_PASSWORD, {
-    host: process.env.MYSQL_HOST,
-    dialect: "mysql",
+const sequelize = new Sequelize(process.env.POSTGRES_DATABASE, process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
+    host: process.env.POSTGRES_HOST,
+    dialect: "postgres",
+    dialectModule: pg,
+    dialectOptions: {
+        ssl: {
+            require: true
+        }
+    }
 });
 
 sequelize
     .authenticate()
     .then(() => {
-    console.log("Conexão OK");
-})
+        console.log('Conexão OK');
+    })
     .catch((error) => {
-        console.error("Falha:", error);
+        console.error('Falha:', error);
     });
 
-const Sensor = sequelize.define("Sensor", {
+const Weather = sequelize.define('weather', {
     wea_temp: {
         type: DataTypes.FLOAT,
         allowNull: false,
@@ -29,4 +35,4 @@ const Sensor = sequelize.define("Sensor", {
     },
 });
 
-export { sequelize, Sensor };
+export { sequelize, Weather };
