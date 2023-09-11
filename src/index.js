@@ -9,6 +9,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+console.log(__dirname);
+
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 
@@ -27,6 +29,7 @@ app.get('/', async (response) => {
     });
 
     response.render('home', { sensor });
+    console.log(sensor)
   } catch (error) {
     console.error('Erro ao buscar dados:', error);
     response.status(500).send('Erro interno do servidor');
