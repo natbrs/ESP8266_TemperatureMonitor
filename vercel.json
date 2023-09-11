@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "name": "esp8266_temperaturemonitor",
+    "builds": [
+        { "src": "index.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+    {
+        "src": "src/.*",
+        "dest": "src/index.js"
+    }
+    ]
+}  
