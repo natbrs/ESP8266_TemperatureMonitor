@@ -3,8 +3,11 @@
 <head>
     <title>Sensor Dashboard</title>
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist-plugin-pointlabels.min.js"></script>
+
 </head>
 <body>
     <h1>Dados coletados:</h1>
@@ -16,31 +19,57 @@
 
     <h1>Gráficos relacionados aos dados coletados: </h1>
     <div class="ct-chart" id="temperatureChart"></div>
-    <div class="ct-chart" id="humidityChart"></div>
+<div class="ct-chart" id="humidityChart"></div>
 
-    <script>
-        const temperatureData = [];
-        const humidityData = [];
-        const labels = [];
+<script>
+    const temperatureData = [];
+    const humidityData = [];
+    const labels = [];
 
-        {{#each sensor}}
-            temperatureData.push({{this.dataValues.wea_temp}});
-            humidityData.push({{this.dataValues.wea_humid}});
-            labels.push('{{this.dataValues.id}}');
-        {{/each}}
+    {{#each sensor}}
+        temperatureData.push({{this.dataValues.wea_temp}});
+        humidityData.push({{this.dataValues.wea_humid}});
+        labels.push('{{this.dataValues.id}}');
+    {{/each}}
 
-        const temperatureDataConfig = {
-            labels: labels,
-            series: [temperatureData]
-        };
+    const temperatureDataConfig = {
+        labels: labels,
+        series: [temperatureData]
+    };
 
-        const humidityDataConfig = {
-            labels: labels,
-            series: [humidityData]
-        };
+    const humidityDataConfig = {
+        labels: labels,
+        series: [humidityData]
+    };
 
-        new Chartist.Line('#temperatureChart', temperatureDataConfig);
-        new Chartist.Line('#humidityChart', humidityDataConfig);
-    </script>
+    const temperatureChartOptions = {
+        plugins: [
+            Chartist.plugins.ctPointLabels({
+                textAnchor: 'middle',
+                labelOffset: {
+                    x: 0,
+                    y: -10
+                },
+                labelInterpolationFnc: (value) => `${value}°C`
+            })
+        ]
+    };
+
+    const humidityChartOptions = {
+        plugins: [
+            Chartist.plugins.ctPointLabels({
+                textAnchor: 'middle',
+                labelOffset: {
+                    x: 0,
+                    y: -10
+                },
+                labelInterpolationFnc: (value) => `${value}%`
+            })
+        ]
+    };
+
+    new Chartist.Line('#temperatureChart', temperatureDataConfig, temperatureChartOptions);
+    new Chartist.Line('#humidityChart', humidityDataConfig, humidityChartOptions);
+</script>
 </body>
 </html>
