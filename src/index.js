@@ -23,17 +23,17 @@ sequelize.sync().then(() => {
   console.error("Error no banco:", error);
 });
 
-app.get('/', async (response) => {
+app.get('/', async (req, res) => {
   try {
     const sensor = await Weather.findAll({
       attributes: ['wea_temp', 'wea_humid', 'createdAt', 'updatedAt']
     });
 
-    response.render('home', { sensor });
-    console.log(sensor)
+    res.render("home", { sensor });
+    console.log(sensor);
   } catch (error) {
-    console.error('Erro ao buscar dados:', error);
-    response.status(500).send('Erro interno do servidor');
+    console.error("Error fetching data:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
