@@ -25,7 +25,7 @@ sequelize.sync().then(() => {
 app.get('/', async (response) => {
   try {
     const sensor = await Weather.findAll({
-      attributes: ['wea_temp', 'wea_humid', 'wea_id', 'createdAt']
+      attributes: ['wea_temp', 'wea_humid', 'createdAt', 'updatedAt']
     });
 
     response.render('home', { sensor });
