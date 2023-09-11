@@ -22,11 +22,11 @@ sequelize.sync().then(() => {
 
 app.get('/', async (response) => {
   try {
-    const sensors = await Sensor.findAll({
+    const sensor = await Weather.findAll({
       attributes: ['wea_temp', 'wea_humid', 'wea_id', 'createdAt']
     });
 
-    response.render('home', { sensors });
+    response.render('home', { sensor });
   } catch (error) {
     console.error('Erro ao buscar dados:', error);
     response.status(500).send('Erro interno do servidor');
