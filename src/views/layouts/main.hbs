@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sensor Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+</head>
+<body>
+    <h1>Dados coletados:</h1>
+    <ul>
+        {{#each sensors}}
+            <li>Temperatura: {{this.dataValues.wea_temp}}, Umidade: {{this.dataValues.wea_humid}}</li>
+        {{/each}}
+    </ul>
+
+    <h1>Gráficos dos dados: </h1>
+    <div id="temperatureChart" class="ct-chart"></div>
+    <div id="humidityChart" class="ct-chart"></div>
+
+    <script>
+        const temperatureData = [];
+        const humidityData = [];
+
+        {{#each sensors}}
+            temperatureData.push({x: '{{this.dataValues.horario}}', y: {{this.dataValues.wea_temp}}});
+            humidityData.push({x: '{{this.dataValues.horario}}', y: {{this.dataValues.wea_humid}}});
+        {{/each}}
+
+        const temperatureChartOptions = {
+            axisX: {
+                labelInterpolationFnc: function(value, index) {
+                    return index % 2 === 0 ? value : null;
+                }
+            },
+            fullWidth: true
+        };
+
+        const humidityChartOptions = {
+            axisX: {
+                labelInterpolationFnc: function(value, index) {
+                    return index % 2 === 0 ? value : null;
+                }
+            },
+            fullWidth: true
+        };
+
+        new Chartist.Line('#temperatureChart', {
+            labels: [],
+            series: [temperatureData]
+        }, temperatureChartOptions);
+
+        new Chartist.Line('#humidityChart', {
+            labels: [],
+            series: [humidityData]
+        }, humidityChartOptions);
+    </script>
+</body>
+</html>
