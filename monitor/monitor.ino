@@ -7,7 +7,7 @@ const char* password = "rafael13";
 
 const char* http_site = "esp-8266-temperature-monitor.vercel.app";
 const int http_port = 3000;
-const char* http_path = "/api/dashboard";
+const char* http_path = "/dashboard";
 
 SimpleDHT11 dht11;
 int pinDHT1 = D2;
@@ -38,22 +38,20 @@ void loop() {
     byte temp = 0;
     byte humid = 0;
     if (dht11.read(pinDHT1, &temp, &humid, NULL)) {
-      Serial.println("Falha na leitura do sensor.");
+      Serial.println("Sensor reading failure.");
       return;
     }
 
-    Serial.println("Gravando dados no BD: ");
-    Serial.print((int)temp);
+    Serial.println("Writing data to the DB: ");
+    Serial.print((float)temp);
     Serial.print(" *C, ");
-    Serial.print((int)humid);
+    Serial.print((float)humid);
     Serial.println(" %");
 
-    if (!sendDataToServer((int)temp, (int)humid)) {
+    if (!sendDataToServer((float)temp, (float)humid)) {
       Serial.println("GET request failed");
     }
   }
-
-  // Outras operações do loop podem continuar aqui
 }
 
 bool sendDataToServer(int temp, int humid) {
@@ -77,17 +75,17 @@ bool sendDataToServer(int temp, int humid) {
     }
 
     while (client.available()) {
-      Serial.println("esperando resto da resposta");
+      Serial.println("Waiting for the rest of the response...");
       String line = client.readStringUntil('\n');
       Serial.println(line);
     }
 
-    Serial.println("concluído");
+    Serial.println("Concluded");
 
     client.stop();
     return true;
   }
 
-  Serial.println("Falha na conexão com o servidor");
+  Serial.println("Failed to connect to the server");
   return false;
 }
