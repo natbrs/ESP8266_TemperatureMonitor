@@ -43,12 +43,12 @@ void loop() {
     }
 
     Serial.println("Writing data to the DB: ");
-    Serial.print((float)temp);
+    Serial.print((int)temp);
     Serial.print(" *C, ");
-    Serial.print((float)humid);
+    Serial.print((int)humid);
     Serial.println(" %");
 
-    if (!sendDataToServer((float)temp, (float)humid)) {
+    if (!sendDataToServer((int)temp, (int)humid)) {
       Serial.println("GET request failed");
     }
   }
