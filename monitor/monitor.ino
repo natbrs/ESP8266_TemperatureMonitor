@@ -13,11 +13,11 @@ SimpleDHT11 dht11;
 int pinDHT1 = D2;
 
 unsigned long previousMillis = 0;
-const long interval = 5000;
+const long interval = 1000;
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("NodeMCU - Gravando dados no BD via GET");
+  Serial.println("Gravando dados no BD via GET");
   Serial.println("Aguardando conexão");
 
   // Connect to Wi-Fi

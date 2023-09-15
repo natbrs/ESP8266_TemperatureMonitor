@@ -18,7 +18,7 @@ const sequelize = new Sequelize(process.env.POSTGRES_DATABASE, process.env.POSTG
 sequelize
     .authenticate()
     .then(() => {
-        console.log('Conexão OK');
+        console.log('Conexão estável');
     })
     .catch((error) => {
         console.error('Falha:', error);
