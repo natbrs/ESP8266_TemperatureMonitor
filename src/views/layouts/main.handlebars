@@ -7,14 +7,14 @@
 </head>
 <body>
     <div style="max-width: 600px;">
-        <h1>Dados coletados:</h1>
+        <h1>Temperatura e Umidade</h1>
         <ul>
             {{#each sensor}}
                 <li>Temperatura: {{this.dataValues.wea_temp}}, Umidade: {{this.dataValues.wea_humid}}</li>
             {{/each}}
         </ul>
 
-        <h1>Gráficos relacionados aos dados coletados:</h1>
+        <h1>Gráficos relacionado aos dados coletados:</h1>
         <canvas id="temperatureChart" width="400" height="200"></canvas>
         <canvas id="humidityChart" width="400" height="200"></canvas>
     </div>

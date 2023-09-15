@@ -5,15 +5,15 @@
 const char* ssid = "PiNat";
 const char* password = "rafael13";
 
-const char* http_site = "esp-8266-temperature-monitor-c8d4ymgxa-natbrs.vercel.app";
+const char* http_site = "esp-8266-temperature-monitor.vercel.app";
 const int http_port = 3000;
-const char* http_path = "/dashboard"; 
+const char* http_path = "/api/dashboard";
 
-int pinDHT11 = D1;
 SimpleDHT11 dht11;
+int pinDHT1 = D2;
 
 unsigned long previousMillis = 0;
-const long interval = 600000;
+const long interval = 5000;
 
 void setup() {
   Serial.begin(9600);
@@ -37,7 +37,7 @@ void loop() {
 
     byte temp = 0;
     byte humid = 0;
-    if (dht11.read(pinDHT11, &temp, &humid, NULL)) {
+    if (dht11.read(pinDHT1, &temp, &humid, NULL)) {
       Serial.println("Falha na leitura do sensor.");
       return;
     }
@@ -52,6 +52,8 @@ void loop() {
       Serial.println("GET request failed");
     }
   }
+
+  // Outras operações do loop podem continuar aqui
 }
 
 bool sendDataToServer(int temp, int humid) {
@@ -61,7 +63,6 @@ bool sendDataToServer(int temp, int humid) {
   String url = "https://" + String(http_site) + http_path + "?wea_humid=" + String(humid) + "&wea_temp=" + String(temp);
   Serial.println("Placing order");
   Serial.println(url);
-
 
   if (client.connect(http_site, http_port)) {
     Serial.println("Connected to client");
@@ -85,8 +86,8 @@ bool sendDataToServer(int temp, int humid) {
 
     client.stop();
     return true;
-  } 
-    
+  }
+
   Serial.println("Falha na conexão com o servidor");
   return false;
 }
