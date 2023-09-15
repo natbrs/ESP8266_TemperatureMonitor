@@ -39,14 +39,10 @@ app.get('/', async (req, res) => {
 
 app.get("/dashboard", async (req, res) => {
   try {
-    const data = req.body;
-
     await Weather.create({
-      wea_temp: data.wea_temp,
-      wea_humid: data.wea_humid
+      wea_temp: req.query.wea_temp,
+      wea_humid: req.query.wea_humid
     });
-    res.send("Data inserted successfully");
-
   } catch (error) {
     console.error("Error inserting data:", error);
     res.status(500).send("Internal Server Error");
