@@ -26,11 +26,11 @@ sequelize
 
 const Weather = sequelize.define('weather', {
     wea_temp: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     wea_humid: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 });

@@ -81,7 +81,6 @@ bool sendDataToServer(int temp, int humid) {
     }
 
     Serial.println("Concluded");
-
     client.stop();
     return true;
   }
