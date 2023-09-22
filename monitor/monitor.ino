@@ -6,14 +6,14 @@ const char* ssid = "PiNat";
 const char* password = "rafael13";
 
 const char* http_site = "esp-8266-temperature-monitor.vercel.app";
-const int http_port = 3000;
+const int http_port = 443;
 const char* http_path = "/dashboard";
 
 SimpleDHT11 dht11;
 int pinDHT1 = D2;
 
 unsigned long previousMillis = 0;
-const long interval = 1000;
+const long interval = 600000;
 
 void setup() {
   Serial.begin(9600);
@@ -26,7 +26,7 @@ void setup() {
     delay(1000);
     Serial.print(".");
   }
-  Serial.println("\nWi-Fi conectado com sucesso: " + WiFi.localIP().toString());
+  Serial.println("\nWi-Fi connected successfully: " + WiFi.localIP().toString());
 }
 
 void loop() {
