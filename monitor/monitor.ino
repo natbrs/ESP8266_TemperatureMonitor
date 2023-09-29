@@ -2,8 +2,8 @@
 #include <ESP8266HTTPClient.h>
 #include <SimpleDHT.h>
 
-const char* ssid = "PiNat";
-const char* password = "rafael13";
+const char* ssid = "Fatec111";
+const char* password = "123654789";
 
 const char* http_site = "esp-8266-temperature-monitor.vercel.app";
 const int http_port = 443;
@@ -13,7 +13,7 @@ SimpleDHT11 dht11;
 int pinDHT1 = D2;
 
 unsigned long previousMillis = 0;
-const long interval = 600000;
+const long interval = 20000;
 
 void setup() {
   Serial.begin(9600);
