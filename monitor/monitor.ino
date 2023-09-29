@@ -13,7 +13,7 @@ SimpleDHT11 dht11;
 int pinDHT1 = D2;
 
 unsigned long previousMillis = 0;
-const long interval = 20000;
+const long interval = 36000;
 
 void setup() {
   Serial.begin(9600);
