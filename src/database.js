@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from 'sequelize';
+const { Sequelize, DataTypes } = require('sequelize');
 import pg from 'pg';
 import dotenv from 'dotenv/config.js';
 
