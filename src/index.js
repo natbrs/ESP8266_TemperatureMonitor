@@ -38,10 +38,11 @@ app.get('/', async (req, res) => {
 });
 
 app.get("/dashboard", async (req, res) => {
+  const data = req.body;
   try {
     await Weather.create({
-      wea_temp: req.query.wea_temp,
-      wea_humid: req.query.wea_humid
+      wea_temp: data.query.wea_temp,
+      wea_humid: data.query.wea_humid
     });
   } catch (error) {
     console.error("Error inserting data:", error);
