@@ -1,5 +1,7 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize, DataTypes } from "sequelize";
+
 import pg from 'pg';
+
 import dotenv from 'dotenv/config.js';
 
 console.log(process.env.POSTGRES_DATABASE)
